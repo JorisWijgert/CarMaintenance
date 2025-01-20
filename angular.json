@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "CarMaintenance:build:production"
+              "buildTarget": "CarMaintenance:build:production"
             },
             "development": {
-              "browserTarget": "CarMaintenance:build:development"
+              "buildTarget": "CarMaintenance:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "CarMaintenance:build"
+            "buildTarget": "CarMaintenance:build"
           }
         },
         "test": {
