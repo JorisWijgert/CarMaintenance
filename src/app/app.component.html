@@ -1,1 +1,10 @@
-<router-outlet />
+<div>
+  <h1>Schedule car maintenance</h1>
+  <form [formGroup]="scheduleMaintenanceJobForm">
+    <select id="maintenanceJob" formControlName="maintenanceJob">
+      @for (m of maintenanceJobs; track m.id) {
+        <option [ngValue]="m.id">{{ m.jobTitle }}</option>
+      }
+    </select>
+  </form>
+</div>
