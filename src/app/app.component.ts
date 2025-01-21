@@ -15,6 +15,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { DecimalPipe } from '@angular/common';
+import { SparePart } from './models/spare-part';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -44,6 +46,7 @@ export class AppComponent implements OnInit {
   public markupWeekend = 100;
   public costOfScheduledMaintenanceJobWithoutTax = 0;
   public costOfScheduledMaintenanceJob = 0;
+
   public readonly taxPercentage = 21;
   public readonly hourRate = 60;
 

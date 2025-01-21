@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { map, mergeMap, Observable, of } from 'rxjs';
 import { Brand } from '../models/brand';
 import { MockObjects } from '../models/mock-objects';
 import { CarModel } from '../models/car-model';
@@ -7,7 +7,7 @@ import { SparePart } from '../models/spare-part';
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CarService {
   public get brands(): Observable<Brand[]> {
@@ -19,10 +19,24 @@ export class CarService {
   }
 
   public get maintenanceJobs(): Observable<MaintenanceJob[]> {
-    return of(MockObjects.maintenanceJobs);
+    return this.updateSparePartPrices().pipe(
+      mergeMap(() => {
+        return of(MockObjects.maintenanceJobs);
+      })
+    );
   }
 
   public get spareParts(): Observable<SparePart[]> {
     return of(MockObjects.spareParts);
+  }
+
+  public updateSparePartPrices(): Observable<void> {
+    return of(MockObjects.spareParts).pipe(
+      map((parts) => {
+        parts.forEach(
+          (part) => (part.cost = Math.floor(Math.random() * (250 - 40) + 40))
+        );
+      })
+    );
   }
 }
