@@ -46,6 +46,7 @@
     }
   </ul>
   }
+  <!-- Date and time picker to select the date and time when the job should be performed -->
   <mat-form-field>
     <mat-label>Maintenance date</mat-label>
     <input matInput [matDatepicker]="datepicker" [(ngModel)]="selectedDate" />
@@ -66,19 +67,22 @@
     <mat-timepicker #timepicker />
     <mat-timepicker-toggle [for]="timepicker" matSuffix />
   </mat-form-field>
+  <!-- Calculate the cost of performing the job -->
   <div>
     <button mat-button (click)="calculate()">Calculate</button>
   </div>
 
+  <!-- Notify the user that a weekend markup is applied -->
   @if(markupWeekend !== 100) {
     <p>The selected day is in a weekend, please take into account that a markup of {{markupWeekend}}% is set.</p>
   }
 
+  <!-- Display the cost with and without VAT -->
   @if(costOfScheduledMaintenanceJob > 0) {
     <h4>Result</h4>
     <p>Performing the selected maintenance job will cost the following:</p>
-    <p>Excluding tax: € {{costOfScheduledMaintenanceJobWithoutTax | number : '1.2-2'}}</p>
-    <p>Including tax ({{taxPercentage}}%): € {{costOfScheduledMaintenanceJob | number : '1.2-2'}}</p>
+    <p>Excluding VAT: € {{costOfScheduledMaintenanceJobWithoutTax | number : '1.2-2'}}</p>
+    <p>Including VAT ({{taxPercentage}}%): € {{costOfScheduledMaintenanceJob | number : '1.2-2'}}</p>
   }
   }
 </div>

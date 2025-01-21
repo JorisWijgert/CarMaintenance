@@ -40,7 +40,6 @@ export class AppComponent implements OnInit {
   public title = 'CarMaintenance';
   public maintenanceJobs: MaintenanceJob[] = [];
   public scheduleMaintenanceJobForm: FormGroup;
-  public dateTimeForm: FormGroup;
   public selectedMaintenanceJob?: MaintenanceJob;
   public selectedDate: Date = new Date();
   public markupWeekend = 100;
@@ -52,55 +51,69 @@ export class AppComponent implements OnInit {
 
   private readonly markupIfWeekend = 150;
 
+  /**
+   * Sets up the formGroup and the car service
+   * @param carService is a service that communicates with a source
+   */
   constructor(public carService: CarService) {
     this.scheduleMaintenanceJobForm = new FormGroup({
       maintenanceJob: new FormControl(null),
     });
-
-    this.dateTimeForm = new FormGroup({
-      date: new FormControl(Date.now()),
-      time: new FormControl(Date.now()),
-    });
   }
 
+  /**
+   * Retrieves the maintenance jobs from the carService, to display in the dropdown
+   */
   public ngOnInit(): void {
     this.carService.maintenanceJobs.subscribe((jobs) => {
       this.maintenanceJobs = jobs;
     });
   }
 
-  public jobChange() {
+  /**
+   * When a job is selected in the dropdown, the selected job will change, so it can display the details
+   */
+  public jobChange(): void {
     const formValue = this.scheduleMaintenanceJobForm.value.maintenanceJob;
     this.selectedMaintenanceJob = this.maintenanceJobs.find(
       (job) => job.id === formValue
     );
   }
 
-  public calculate() {
+  /**
+   * Calculates the cost of executing the maintenance job on the selected day and time
+   * @returns void
+   */
+  public calculate(): void {
+    // early exit when no job is selected
     if (!this.selectedMaintenanceJob) {
       return;
     }
 
+    let sum = 0;
+
+    // determine if a markup for the weekend is applicable
     this.markupWeekend = 100;
     if(this.selectedDate.getDay() === 6 || this.selectedDate.getDay() === 0) {
       this.markupWeekend = this.markupIfWeekend;
     }
-    let sum = 0;
 
+    // add the cost of each spare part (if present) and add it to the sum
     if (this.selectedMaintenanceJob.spareParts && this.selectedMaintenanceJob.spareParts.length > 0) {
       this.selectedMaintenanceJob.spareParts.forEach((part) => {
         sum += part.cost;
       })
     }
 
+    // add the servicehours (times the hour rate) to the sum
     sum += this.selectedMaintenanceJob?.serviceHours * this.hourRate;
 
+    // apply the weekend markup
     sum = (sum/100) * this.markupWeekend;
 
+    // calculate the VAT
     this.costOfScheduledMaintenanceJobWithoutTax = sum;
-
     sum = (sum/100) * (this.taxPercentage + 100);
-
     this.costOfScheduledMaintenanceJob = sum;
   }
 }

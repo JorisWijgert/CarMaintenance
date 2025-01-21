@@ -10,14 +10,23 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class CarService {
+  /**
+   * get the car brands
+   */
   public get brands(): Observable<Brand[]> {
     return of(MockObjects.brands);
   }
 
+  /**
+   * get the car models
+   */
   public get carModels(): Observable<CarModel[]> {
     return of(MockObjects.carModels);
   }
 
+  /**
+   * update the sparepart prices and get the maintenance jobs with the updated sparepart prices
+   */
   public get maintenanceJobs(): Observable<MaintenanceJob[]> {
     return this.updateSparePartPrices().pipe(
       mergeMap(() => {
@@ -26,10 +35,21 @@ export class CarService {
     );
   }
 
+  /**
+   * update the sparepart prices and get the updated spareparts
+   */
   public get spareParts(): Observable<SparePart[]> {
-    return of(MockObjects.spareParts);
+    return this.updateSparePartPrices().pipe(
+      mergeMap(() => {
+        return of(MockObjects.spareParts);
+      })
+    );
   }
 
+  /**
+   * update the sparepart prices with random prices, as a mock for an external service
+   * @returns void
+   */
   public updateSparePartPrices(): Observable<void> {
     return of(MockObjects.spareParts).pipe(
       map((parts) => {
