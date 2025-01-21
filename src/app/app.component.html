@@ -1,10 +1,64 @@
 <div>
   <h1>Schedule car maintenance</h1>
+
   <form [formGroup]="scheduleMaintenanceJobForm">
-    <select id="maintenanceJob" formControlName="maintenanceJob">
-      @for (m of maintenanceJobs; track m.id) {
-        <option [ngValue]="m.id">{{ m.jobTitle }}</option>
-      }
-    </select>
+    <mat-form-field>
+      <mat-label>Select an maintenance job:</mat-label>
+      <mat-select
+        id="maintenanceJob"
+        formControlName="maintenanceJob"
+        (selectionChange)="jobChange()"
+      >
+        @for (m of maintenanceJobs; track m.id) {
+        <mat-option [value]="m.id">{{ m.jobTitle }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
   </form>
+
+  <!-- Display details when a job is selected, or a message that a job isn't selected yet -->
+  @if(!selectedMaintenanceJob) {
+  <p>No maintenance job selected</p>
+  } @else {
+  <h3>{{ selectedMaintenanceJob.jobTitle }}</h3>
+  <p>{{ selectedMaintenanceJob.jobDescription }}</p>
+  <!-- Determine whether it should be hour or hours -->
+  @if(selectedMaintenanceJob.serviceHours === 1) {
+  <p>
+    This job will take {{ selectedMaintenanceJob.serviceHours }} hour to
+    complete
+  </p>
+  } @else {
+  <p>
+    This job will take {{ selectedMaintenanceJob.serviceHours }} hours to
+    complete
+  </p>
+  }
+  <!-- Either show that no spare parts are required or list the required spare parts -->
+  @if(!selectedMaintenanceJob.spareParts ||
+  selectedMaintenanceJob.spareParts.length === 0){
+  <p>This job doesn't require spare parts</p>
+  } @else {
+  <h4>Spare parts</h4>
+  <ul>
+    @for (s of selectedMaintenanceJob.spareParts; track s.id) {
+    <li>{{ s.partName }}, € {{ s.cost }}</li>
+    }
+  </ul>
+  }
+  <form [formGroup]="dateTimeForm">
+    <mat-form-field>
+      <mat-label>Choose a date</mat-label>
+      <input matInput [matDatepicker]="datepicker">
+      <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+      <mat-datepicker #datepicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Pick a time</mat-label>
+      <input matInput [matTimepicker]="timepicker">
+      <mat-timepicker-toggle matIconSuffix [for]="timepicker"/>
+      <mat-timepicker #timepicker/>
+    </mat-form-field>
+  </form>
+  }
 </div>
